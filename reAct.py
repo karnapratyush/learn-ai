@@ -1,13 +1,11 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-
 from langchain.tools import tool
-
-from langchain_openrouter import ChatOpenRouter
 from langchain_core.messages import HumanMessage
-from tavily import TavilyClient
-from langchain_tavily import TavilySearch
 from langchain_ollama import ChatOllama
+from langchain_openrouter import ChatOpenRouter
+from langchain_tavily import TavilySearch
+from tavily import TavilyClient
 
 load_dotenv()
 
@@ -23,12 +21,13 @@ def search(query: str):
         str: The search results.
     """
     print(f"Searching for {query}")
-    return tavily.search(query=query)    
+    return tavily.search(query=query)
+
 
 llm = ChatOpenRouter(
     model="openai/gpt-5",
 )
-llm_1=ChatOllama(
+llm_1 = ChatOllama(
     model="gemma4",
     temperature=0.2,
     max_tokens=1024,
@@ -43,7 +42,7 @@ llm_1=ChatOllama(
 
 # res=agent.invoke({"messages": [HumanMessage(content="What is the weather in London?")]})
 # print(res)
-    
+
 #  other option is to use inbuilt tavily function as a tool
 
 agent = create_agent(
@@ -51,7 +50,7 @@ agent = create_agent(
     tools=[TavilySearch()],
     system_prompt="You are a helpful assistant.",
 )
-res=agent.invoke({"messages": [HumanMessage(content="What is the weather in London, UK?")]})
+res = agent.invoke(
+    {"messages": [HumanMessage(content="What is the weather in London, UK?")]}
+)
 print(res)
-
-
