@@ -1,8 +1,12 @@
+import os
+
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langsmith import traceable
+
+load_dotenv()
 
 MAX_ITERATIONS = 10
 MODEL = "gemma4"
@@ -32,7 +36,7 @@ def apply_discount(price: float = 0, discount: float = 0.0) -> float:
     return price * (1 - discount)
 
 
-llm = init_chat_model(f"ollama:{MODEL}", temperature=0)
+llm = init_chat_model("anthropic:claude-sonnet-4-6", temperature=0.7)
 
 
 @traceable(name="LangChain Agent Loop")
@@ -105,6 +109,9 @@ def run_agent(prompt: str):
 
 
 if __name__ == "__main__":
+    if not os.getenv("ANTHROPIC_API_KEY"):
+        print("Please set the ANTHROPIC_API_KEY environment variable.")
+        exit(1)
     print("Hello LangChain Agent (.bind_tools)!")
     print()
     result = run_agent("What is the final discounted price of a laptop?")
